@@ -3,12 +3,13 @@ const {
   CreateUser,
   userLogin,
 } = require("../Controlers/AuthenticationControler");
+const { getUser } = require("../Controlers/UserControler");
 const router = express.Router();
 const upload = require("../Middlewares/Multer");
 
-router.post("/register", upload.none(), CreateUser);
-router.post("/login", upload.none(), userLogin);
-router.post("/user", upload.none(), userLogin);
+router.get("/get", getUser);
+// router.post("/login", upload.none(), userLogin);
+// router.post("/user", upload.none(), userLogin);
 // router.post("/signup", upload.none(), createUser2);
 // router.post("/login", upload.none(), userLogin);
 // router.get("/user", verifyToken, getUserDetails);

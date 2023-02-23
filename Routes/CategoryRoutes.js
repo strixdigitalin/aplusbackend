@@ -3,12 +3,22 @@ const {
   CreateUser,
   userLogin,
 } = require("../Controlers/AuthenticationControler");
+const {
+  createCategory,
+  getCategory,
+} = require("../Controlers/CategoryControler");
+const { createTest, getTest } = require("../Controlers/TestControler");
 const router = express.Router();
 const upload = require("../Middlewares/Multer");
 
-router.post("/register", upload.none(), CreateUser);
-router.post("/login", upload.none(), userLogin);
-router.post("/user", upload.none(), userLogin);
+router.post(
+  "/create",
+  upload.fields([{ name: "image", maxCount: 1 }]),
+  createCategory
+);
+router.get("/get", getCategory);
+// router.post("/login", upload.none(), userLogin);
+// router.post("/user", upload.none(), userLogin);
 // router.post("/signup", upload.none(), createUser2);
 // router.post("/login", upload.none(), userLogin);
 // router.get("/user", verifyToken, getUserDetails);

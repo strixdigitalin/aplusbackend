@@ -7,6 +7,9 @@ app.use(express.json());
 // const mongoose = require("mongoose");
 // --------------------------------------------------- IMPORT ROUTES
 const authRoutes = require("./Routes/AuthenticationRoutes");
+const userRoutes = require("./Routes/UserRoutes");
+const TestRoutes = require("./Routes/TestRoutes");
+const CategoryRoutes = require("./Routes/CategoryRoutes");
 // ----------------------------------------------------------------------------------------------
 
 // -------------------------------------------------------- API VALIDATIONS-----------------------
@@ -37,6 +40,9 @@ app.use(function (req, res, next) {
 //-------------------------------------------------------------------------  define Routes
 // app.use("/static", express.static("uploads"));
 app.use("/auth", authRoutes);
+app.use("/user", userRoutes);
+app.use("/test", TestRoutes);
+app.use("/category", CategoryRoutes);
 // ------------------------------------------------------
 
 const port = process.env.PORT || 5000;

@@ -27,6 +27,9 @@ const userdata = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    course: {
+      type: String,
+    },
     attemptBy: [
       {
         type: ObjectId,
