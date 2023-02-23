@@ -10,6 +10,7 @@ const authRoutes = require("./Routes/AuthenticationRoutes");
 const userRoutes = require("./Routes/UserRoutes");
 const TestRoutes = require("./Routes/TestRoutes");
 const CategoryRoutes = require("./Routes/CategoryRoutes");
+const QuestionRoutes = require("./Routes/QuestionRoutes");
 // ----------------------------------------------------------------------------------------------
 
 // -------------------------------------------------------- API VALIDATIONS-----------------------
@@ -43,6 +44,7 @@ app.use("/auth", authRoutes);
 app.use("/user", userRoutes);
 app.use("/test", TestRoutes);
 app.use("/category", CategoryRoutes);
+app.use("/question", QuestionRoutes);
 // ------------------------------------------------------
 
 const port = process.env.PORT || 5000;

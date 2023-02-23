@@ -3,10 +3,48 @@ const { validateUserDetail } = require("../Middlewares/AuthMiddleware");
 const SendError = require("../Middlewares/Response");
 const User = require("../Schema/User");
 const validator = require("../Middlewares/Validator");
+const Test = require("../Schema/Test");
+const Categories = require("../Schema/Categories");
+const Question = require("../Schema/Question");
 
-const getUser = async (req, res, next) => {
+const createQuestion = async (req, res, next) => {
+  const testData = req.body;
+
+  const { question, options } = testData;
+
   try {
-    const user = await User.find(req.query);
+    if (!validator.isValid(question)) {
+      return res
+        .status(400)
+        .send({ status: false, message: "Question is required" });
+    }
+    if (!validator.isValid(options)) {
+      return res
+        .status(400)
+        .send({ status: false, message: "Options are required" });
+    }
+    if (options.length < 3) {
+      return res
+        .status(400)
+        .send({ success: false, message: "At least 3 options required" });
+    }
+    const savedData = await Question.create({
+      ...testData,
+    });
+    res.status(200).send({
+      success: true,
+      message: "Category Created",
+      data: savedData._doc,
+    });
+  } catch (e) {
+    console.log(e);
+    SendError(res, e);
+  }
+};
+
+const getQuestions = async (req, res, next) => {
+  try {
+    const user = await Question.find(req.query);
     if (user.length == 0) {
       return res
         .status(400)
@@ -14,7 +52,7 @@ const getUser = async (req, res, next) => {
     }
     res.status(200).send({
       success: true,
-      message: "User successfully created",
+      message: "Question fetched",
       user,
     });
   } catch (e) {
@@ -75,7 +113,8 @@ const getUser = async (req, res, next) => {
 //   }
 // };
 module.exports = {
-  getUser,
+  getQuestions,
+  createQuestion,
 };
 
 // module.exports = { createUser, userLogin, getUserDetails, updateUserDetails }

@@ -3,10 +3,14 @@ const {
   CreateUser,
   userLogin,
 } = require("../Controlers/AuthenticationControler");
-const { getUser } = require("../Controlers/UserControler");
+const {
+  createQuestion,
+  getQuestions,
+} = require("../Controlers/QuestionControler");
 const router = express.Router();
 const upload = require("../Middlewares/Multer");
 
-router.get("/get", getUser);
+router.post("/create", createQuestion);
+router.get("/get", getQuestions);
 
 module.exports = router;

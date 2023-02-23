@@ -49,11 +49,11 @@ const getCategory = async (req, res, next) => {
     if (user.length == 0) {
       return res
         .status(400)
-        .send({ success: false, message: "User fetched", user });
+        .send({ success: false, message: "Data not found", user });
     }
     res.status(200).send({
       success: true,
-      message: "User successfully created",
+      message: "Categories fetched",
       user,
     });
   } catch (e) {
