@@ -50,7 +50,10 @@ const createTest = async (req, res, next) => {
 };
 const getTest = async (req, res, next) => {
   try {
-    const test = await Test.find(req.query).populate("questions");
+    const test = await Test.find(req.query)
+      .populate("category")
+      .populate("course")
+      .populate("subCategory");
     if (test.length == 0) {
       return res.status(400).send({ success: false, message: "No Data Found" });
     }

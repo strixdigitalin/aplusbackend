@@ -2,14 +2,13 @@ const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Schema.Types;
 const userdata = new mongoose.Schema(
   {
-    questions: [
-      {
-        type: ObjectId,
-        ref: "question",
-      },
-    ],
     category: {
-      type: String,
+      type: ObjectId,
+      ref: "category",
+    },
+    subCategory: {
+      type: ObjectId,
+      ref: "subcategory",
     },
     description: {
       type: String,
@@ -28,9 +27,33 @@ const userdata = new mongoose.Schema(
       default: false,
     },
     course: {
-      type: String,
+      type: ObjectId,
+      ref: "course",
     },
+    cutOff: {
+      type: Number,
+    },
+    totalTime: {
+      type: Number,
+    },
+    totalQuestions: {
+      type: Number,
+    },
+    totalMarks: {
+      type: Number,
+    },
+    permissionToSwitch: {
+      type: Boolean,
+    },
+    sections: [],
+
     attemptBy: [
+      {
+        type: ObjectId,
+        ref: "user",
+      },
+    ],
+    result: [
       {
         type: ObjectId,
         ref: "user",

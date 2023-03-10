@@ -5,8 +5,9 @@ const User = require("../Schema/User");
 const validator = require("../Middlewares/Validator");
 const Test = require("../Schema/Test");
 const Categories = require("../Schema/Categories");
+const SubCategoriesSchema = require("../Schema/SubCategoriesSchema");
 
-const createCategory = async (req, res, next) => {
+const createSubCategory = async (req, res, next) => {
   const testData = req.body;
   if (!req.files) {
     return res
@@ -21,14 +22,14 @@ const createCategory = async (req, res, next) => {
       .status(400)
       .send({ success: false, message: "Image is required" });
   }
-  const { categoryName } = testData;
+  const { subCategoryName } = testData;
   try {
-    if (!validator.isValid(categoryName)) {
+    if (!validator.isValid(subCategoryName)) {
       return res
         .status(400)
         .send({ status: false, message: "categoryName is required" });
     }
-    const savedData = await Categories.create({
+    const savedData = await SubCategoriesSchema.create({
       ...testData,
       image: uploadedFile.filename,
     });
@@ -43,9 +44,9 @@ const createCategory = async (req, res, next) => {
   }
 };
 
-const getCategory = async (req, res, next) => {
+const getSubCategory = async (req, res, next) => {
   try {
-    const data = await Categories.find(req.query);
+    const data = await SubCategoriesSchema.find(req.query);
     if (data.length == 0) {
       return res
         .status(400)
@@ -114,8 +115,8 @@ const getCategory = async (req, res, next) => {
 //   }
 // };
 module.exports = {
-  getCategory,
-  createCategory,
+  getSubCategory,
+  createSubCategory,
 };
 
 // module.exports = { createUser, userLogin, getUserDetails, updateUserDetails }

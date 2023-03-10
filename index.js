@@ -11,6 +11,12 @@ const userRoutes = require("./Routes/UserRoutes");
 const TestRoutes = require("./Routes/TestRoutes");
 const CategoryRoutes = require("./Routes/CategoryRoutes");
 const QuestionRoutes = require("./Routes/QuestionRoutes");
+const CourseRoutes = require("./Routes/CourseRoutes");
+const AssetsRoutes = require("./Routes/AssetsRoutes");
+const BlogRoutes = require("./Routes/BlogRoutes");
+const FaqRoutes = require("./Routes/FaqRoutes");
+const SubCAtegory = require("./Routes/SubCategoriesRoutes");
+const MockRoutes = require("./Routes/MockTestRoutes");
 // ----------------------------------------------------------------------------------------------
 
 // -------------------------------------------------------- API VALIDATIONS-----------------------
@@ -39,15 +45,21 @@ app.use(function (req, res, next) {
 // ---------------------------------------------------------------------
 
 //-------------------------------------------------------------------------  define Routes
-// app.use("/static", express.static("uploads"));
+app.use("/static", express.static("uploads"));
 app.use("/auth", authRoutes);
 app.use("/user", userRoutes);
 app.use("/test", TestRoutes);
 app.use("/category", CategoryRoutes);
 app.use("/question", QuestionRoutes);
+app.use("/course", CourseRoutes);
+app.use("/asset", AssetsRoutes);
+app.use("/blog", BlogRoutes);
+app.use("/faq", FaqRoutes);
+app.use("/sub-category", SubCAtegory);
+app.use("/mock", MockRoutes);
 // ------------------------------------------------------
 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 5001;
 app.listen(port, () => {
   console.log(`server running at port ${port}`);
 });

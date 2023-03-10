@@ -5,30 +5,44 @@ const User = require("../Schema/User");
 const validator = require("../Middlewares/Validator");
 const Test = require("../Schema/Test");
 const Categories = require("../Schema/Categories");
+const BlogSchema = require("../Schema/BlogSchema");
 
-const createCategory = async (req, res, next) => {
+const createBlog = async (req, res, next) => {
   const testData = req.body;
+
   if (!req.files) {
     return res
       .status(400)
       .send({ success: false, message: "image is required" });
   }
+
   const { image } = req.files;
-  console.log(image, "<<< this is image");
-  const uploadedFile = image[0];
   if (!image) {
     return res
       .status(400)
       .send({ success: false, message: "Image is required" });
   }
-  const { categoryName } = testData;
+  const uploadedFile = image[0];
+
+  const { title, description, shortDescription } = testData;
   try {
-    if (!validator.isValid(categoryName)) {
+    if (!validator.isValid(title)) {
       return res
         .status(400)
-        .send({ status: false, message: "categoryName is required" });
+        .send({ status: false, message: "title is required" });
     }
-    const savedData = await Categories.create({
+    if (!validator.isValid(shortDescription)) {
+      return res
+        .status(400)
+        .send({ status: false, message: "shortDescription is required" });
+    }
+    if (!validator.isValid(description)) {
+      return res
+        .status(400)
+        .send({ status: false, message: "description is required" });
+    }
+
+    const savedData = await BlogSchema.create({
       ...testData,
       image: uploadedFile.filename,
     });
@@ -43,9 +57,9 @@ const createCategory = async (req, res, next) => {
   }
 };
 
-const getCategory = async (req, res, next) => {
+const getBlogs = async (req, res, next) => {
   try {
-    const data = await Categories.find(req.query);
+    const data = await BlogSchema.find(req.query);
     if (data.length == 0) {
       return res
         .status(400)
@@ -54,6 +68,31 @@ const getCategory = async (req, res, next) => {
     res.status(200).send({
       success: true,
       message: "Categories fetched",
+      data,
+    });
+  } catch (e) {
+    console.log(e);
+    SendError(res, e);
+  }
+};
+const deleteBlog = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    if (!id) {
+      return res.status(400).send({
+        success: false,
+        message: "ID is required",
+      });
+    }
+    const data = await BlogSchema.findByIdAndDelete(req.params.id);
+    if (data.length == 0) {
+      return res
+        .status(400)
+        .send({ success: false, message: "Blog does not exist", data });
+    }
+    res.status(200).send({
+      success: true,
+      message: "Blog Deleted",
       data,
     });
   } catch (e) {
@@ -114,8 +153,9 @@ const getCategory = async (req, res, next) => {
 //   }
 // };
 module.exports = {
-  getCategory,
-  createCategory,
+  getBlogs,
+  createBlog,
+  deleteBlog,
 };
 
 // module.exports = { createUser, userLogin, getUserDetails, updateUserDetails }

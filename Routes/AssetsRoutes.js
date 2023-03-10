@@ -1,19 +1,44 @@
 const express = require("express");
 const {
+  getAsset,
+  createAsset,
+  createLogo,
+  createPdf,
+  uploadImages,
+  getAllQuestionImages,
+} = require("../Controlers/AssetControler");
+const {
   CreateUser,
   userLogin,
 } = require("../Controlers/AuthenticationControler");
 const {
-  createTest,
-  getTest,
-  addQuestionInTest,
-} = require("../Controlers/TestControler");
+  createCategory,
+  getCategory,
+} = require("../Controlers/CategoryControler");
+const { getCourse, createCourse } = require("../Controlers/CourseControler");
+const { createTest, getTest } = require("../Controlers/TestControler");
 const router = express.Router();
 const upload = require("../Middlewares/Multer");
 
-router.post("/create", createTest);
-router.post("/add-question", upload.none(), addQuestionInTest);
-router.get("/get", getTest);
+router.post(
+  "/banner",
+  upload.fields([{ name: "image", maxCount: 5 }]),
+  createAsset
+);
+router.post(
+  "/logo",
+  upload.fields([{ name: "image", maxCount: 5 }]),
+  createLogo
+);
+router.post("/pdf", upload.fields([{ name: "pdf", maxCount: 2 }]), createPdf);
+router.get("/get", getAsset);
+router.get("/question", getAllQuestionImages);
+router.post(
+  "/upload-images",
+  upload.fields([{ name: "image", maxCount: 10 }]),
+  uploadImages
+);
+
 // router.post("/login", upload.none(), userLogin);
 // router.post("/user", upload.none(), userLogin);
 // router.post("/signup", upload.none(), createUser2);

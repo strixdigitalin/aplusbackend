@@ -10,20 +10,25 @@ const Question = require("../Schema/Question");
 const createQuestion = async (req, res, next) => {
   const testData = req.body;
 
-  const { question, options } = testData;
+  const { english, hindi } = testData;
 
   try {
-    if (!validator.isValid(question)) {
+    if (!validator.isValid(english.question)) {
       return res
         .status(400)
         .send({ status: false, message: "Question is required" });
     }
-    if (!validator.isValid(options)) {
+    if (!validator.isValid(hindi.question)) {
+      return res
+        .status(400)
+        .send({ status: false, message: "Question Hindi is required" });
+    }
+    if (!validator.isValid(english.options)) {
       return res
         .status(400)
         .send({ status: false, message: "Options are required" });
     }
-    if (options.length < 3) {
+    if (english.options.length < 3) {
       return res
         .status(400)
         .send({ success: false, message: "At least 3 options required" });
@@ -41,19 +46,17 @@ const createQuestion = async (req, res, next) => {
     SendError(res, e);
   }
 };
+const uploadExcel = async (req, res, next) => {
+  const { Questions } = req.body;
+  console.log(Questions, "<<<< Questions");
 
-const getQuestions = async (req, res, next) => {
   try {
-    const user = await Question.find(req.query);
-    if (user.length == 0) {
-      return res
-        .status(400)
-        .send({ success: false, message: "Data not found", user });
-    }
+    const data = await Question.insertMany(Questions);
+
     res.status(200).send({
       success: true,
-      message: "Question fetched",
-      user,
+      message: "Category Created",
+      data: data,
     });
   } catch (e) {
     console.log(e);
@@ -61,6 +64,150 @@ const getQuestions = async (req, res, next) => {
   }
 };
 
+const getQuestions = async (req, res, next) => {
+  try {
+    const data = await Question.find(req.query).populate("testId");
+    if (data.length == 0) {
+      return res
+        .status(400)
+        .send({ success: false, message: "Data not found", data: [] });
+    }
+    res.status(200).send({
+      success: true,
+      message: "Question fetched",
+      data,
+    });
+  } catch (e) {
+    console.log(e);
+    SendError(res, e);
+  }
+};
+const updateQuestion = async (req, res) => {
+  try {
+    const { questionId } = req.params;
+    const { questionData } = req.body;
+    // let senddata = questionData;
+    console.log(questionData);
+    let payload = {
+      correctAnswer: questionData.correctAnswer,
+      level: questionData.level,
+      topic: questionData.topic,
+      solution: questionData.solution,
+
+      section: questionData.section,
+    };
+
+    // res.status(200).send({ success: true, senddata });
+    // return null;
+
+    if (!questionId)
+      return res
+        .status(400)
+        .send({ success: false, message: "Question Id is required" });
+    if (!questionData)
+      return res
+        .status(400)
+        .send({ success: false, message: "Question Data is required" });
+
+    const data = await Question.findByIdAndUpdate(questionId, payload, {
+      new: true,
+    });
+    res.status(200).send({
+      success: true,
+      message: "Question updated",
+      data,
+    });
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+const updateQuestionMedia = async (req, res) => {
+  try {
+    let { question, lang, questionId, fieldText } = req.body;
+    const { image } = req.files;
+    console.log(req.body);
+    if (question == 1) {
+      if (lang == "eng") {
+        let values = {};
+        if (fieldText) {
+          values = { ...values, "english.question": fieldText };
+        }
+        if (image) {
+          values = { ...values, "english.isImage": image[0].filename };
+        }
+        const data = await Question.findByIdAndUpdate(
+          questionId,
+          {
+            $set: values,
+          },
+          { new: true }
+        );
+        return res
+          .status(200)
+          .send({ success: true, message: "File updated", data });
+      }
+      if (lang == "hindi") {
+        let values = {};
+        if (fieldText) {
+          values = { ...values, "hindi.question": fieldText };
+        }
+        if (image) {
+          values = { ...values, "hindi.isImage": image[0].filename };
+        }
+        const data = await Question.findByIdAndUpdate(
+          questionId,
+          {
+            $set: values,
+          },
+          { new: true }
+        );
+        return res
+          .status(200)
+          .send({ success: true, message: "File updated", data });
+      }
+    }
+    const questionData = await Question.findById(questionId);
+
+    // console.log(questionData, "<<this is question data");
+
+    const { option } = req.body;
+    if (lang == "eng") {
+      let options = questionData.english.options;
+      options[option - 1].isImage = image[0].filename;
+      options[option - 1].option = fieldText;
+      console.log(options, "<<< this is new options");
+      const data = await Question.updateOne(
+        { _id: questionId },
+        {
+          $set: {
+            "english.options": options,
+          },
+        },
+        { new: true }
+      );
+      res.status(200).send({ success: true, message: "File updated", data });
+    }
+    if (lang == "hindi") {
+      let options = questionData.hindi.options;
+      options[+option - 1].isImage = image[0].filename;
+      console.log(options, "<<< this is new options");
+      const data = await Question.updateOne(
+        { _id: questionId },
+        {
+          $set: {
+            "hindi.options": options,
+          },
+        },
+        { new: true }
+      );
+      res.status(200).send({ success: true, message: "File updated", data });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(400).send({ success: false, message: error.message });
+  }
+};
 // const userLogin = async function (req, res) {
 //   try {
 //     const loginDetails = req.body;
@@ -114,7 +261,10 @@ const getQuestions = async (req, res, next) => {
 // };
 module.exports = {
   getQuestions,
+  uploadExcel,
+  updateQuestion,
   createQuestion,
+  updateQuestionMedia,
 };
 
 // module.exports = { createUser, userLogin, getUserDetails, updateUserDetails }
