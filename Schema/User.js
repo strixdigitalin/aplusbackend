@@ -12,11 +12,17 @@ const userdata = new mongoose.Schema(
     },
     email: {
       type: String,
+      unique: [true, "User already registered using this email"],
       required: [true, "Email (email) is required"],
     },
     password: {
       type: String,
       required: [true, "Password is required"],
+    },
+    role: {
+      type: String,
+      required: [true, "Role is required"],
+      enum: ["student", "admin"],
     },
     tests: [
       {

@@ -13,13 +13,23 @@ const {
   getCategory,
 } = require("../Controlers/CategoryControler");
 const { getCourse, createCourse } = require("../Controlers/CourseControler");
-const { startMockTest } = require("../Controlers/MockTestControler");
+const {
+  startMockTest,
+  getMockTest,
+  submitAnswer,
+  getAnswerOfQuestion,
+  submitMockTest,
+} = require("../Controlers/MockTestControler");
 const { createTest, getTest } = require("../Controlers/TestControler");
 const router = express.Router();
 const upload = require("../Middlewares/Multer");
 
 router.post("/start", startMockTest);
-router.get("/get", getBlogs);
+router.post("/submit", startMockTest);
+router.get("/get", getMockTest);
+router.post("/answer", submitAnswer);
+router.get("/answer/:questionId/:mockId", getAnswerOfQuestion);
+router.post("/submit/:mockId", submitMockTest);
 router.delete("/delete/:id", deleteBlog);
 // router.post("/login", upload.none(), userLogin);
 // router.post("/user", upload.none(), userLogin);

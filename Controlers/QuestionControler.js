@@ -66,7 +66,9 @@ const uploadExcel = async (req, res, next) => {
 
 const getQuestions = async (req, res, next) => {
   try {
-    const data = await Question.find(req.query).populate("testId");
+    const data = await Question.find(req.query)
+      .populate("testId")
+      .sort({ Sr: 1 });
     if (data.length == 0) {
       return res
         .status(400)

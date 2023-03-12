@@ -10,6 +10,9 @@ const userdata = new mongoose.Schema(
       type: ObjectId,
       ref: "user",
     },
+    isSubmitted: {
+      default: false,
+    },
     answers: [
       {
         question: { type: ObjectId, ref: "question" },

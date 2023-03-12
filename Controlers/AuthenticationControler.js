@@ -1,5 +1,8 @@
 const bcrypt = require("bcrypt");
-const { validateUserDetail } = require("../Middlewares/AuthMiddleware");
+const {
+  validateUserDetail,
+  generateJWt,
+} = require("../Middlewares/AuthMiddleware");
 const SendError = require("../Middlewares/Response");
 const User = require("../Schema/User");
 const validator = require("../Middlewares/Validator");
@@ -61,7 +64,10 @@ const userLogin = async function (req, res) {
     }
 
     const checkPassword = await bcrypt.compare(password, userData.password);
-
+    const token = generateJWt({
+      _id: userData._id,
+      role: userData.role,
+    });
     if (!checkPassword)
       return res.status(401).send({
         status: false,
@@ -72,7 +78,7 @@ const userLogin = async function (req, res) {
     return res.status(200).send({
       status: true,
       message: "LogIn Successful!!",
-      data: userData,
+      data: { ...userData._doc, token },
     });
   } catch (err) {
     return res.status(500).send({ status: false, error: err.message });
