@@ -41,7 +41,7 @@ const submitAnswer = async (req, res, next) => {
   const { testId, mockId, questionId, answer } = req.body;
   // const checkExist = await MockTest.find({ "answers.question": questionId });
   const data = await MockTest.findOneAndUpdate(
-    { mockId, "answers.question": questionId },
+    { mockId, "answers.question": questionId, _id: mockId },
     {
       $set: {
         "answers.$.response": answer,
@@ -49,6 +49,7 @@ const submitAnswer = async (req, res, next) => {
     },
     { new: true }
   );
+  console.log(data, "<<< this is data");
   if (data != null) {
     res.status(200).send({ success: true, message: "updated", data });
   } else {
