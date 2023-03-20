@@ -7,6 +7,7 @@ const Test = require("../Schema/Test");
 const Categories = require("../Schema/Categories");
 const BlogSchema = require("../Schema/BlogSchema");
 const MockTest = require("../Schema/MockTest");
+const Question = require("../Schema/Question");
 
 const startMockTest = async (req, res) => {
   try {
@@ -29,7 +30,7 @@ const startMockTest = async (req, res) => {
 };
 const getMockTest = async (req, res) => {
   try {
-    const data = await MockTest.find(req.query).sort({ createdAt: 1 });
+    const data = await MockTest.find(req.query).populate("answers.question").sort({ createdAt: 1 });
     res.status(200).send({ success: true, message: "All test", data });
   } catch (error) {
     console.log(error);
@@ -99,14 +100,104 @@ const getAnswerOfQuestion = async (req, res, next) => {
 const submitMockTest = async (req, res) => {
   try {
     const { mockId } = req.params;
+
+    const mockData = await MockTest.findById(mockId).populate(
+      "answers.question",
+      "correctAnswer section"
+    );
+
+    // let correctAnswer = [];
+    // let wrongAnswers = [];
+    // mockData.answers.map((item) => {
+    //   if (item.question.correctAnswer == item.response)
+    //     correctAnswer = [...correctAnswer, item];
+    //   else wrongAnswers = [...wrongAnswers, item];
+    // });
+    const checkRes = (item) => item.question.correctAnswer == item.response;
+    let section1 = [];
+    let section2 = [];
+    let section3 = [];
+    let section4 = [];
+    mockData.answers.map((item) => {
+      if (item.question.section == 1) {
+        section1 = [
+          ...section1,
+          {
+            question: item.question,
+            response: item.response,
+            _id: item._id,
+            isCorrect: checkRes(item),
+          },
+        ];
+      }
+      if (item.question.section == 2) {
+        section2 = [
+          ...section2,
+          {
+            question: item.question,
+            response: item.response,
+            _id: item._id,
+            isCorrect: checkRes(item),
+          },
+        ];
+      }
+      if (item.question.section == 3) {
+        section2 = [
+          ...section3,
+          {
+            question: item.question,
+            response: item.response,
+            _id: item._id,
+            isCorrect: checkRes(item),
+          },
+        ];
+      }
+    });
+
+    const statiStics = async (oneSection, section) => {
+      console.log(mockData.test, "<< this i sone section");
+      const total = oneSection.length;
+      const correct = oneSection.filter((item) => item.isCorrect).length;
+      const inCorrect = total - correct;
+      const totalQuestion = await Question.count({
+        // testId: mockData.test,
+        testId: `${mockData.test}`,
+        section,
+      });
+      let send = {
+        total,
+        correct,
+        inCorrect,
+        totalQuestion,
+      };
+      return send;
+    };
+    const analytics1 = await statiStics(section1, 1);
+    const analytics2 = await statiStics(section2, 2);
+    const analytics3 = await statiStics(section3, 3);
+    const analytics4 = await statiStics(section4, 4);
+    const analytics = {
+      section1: analytics1,
+      section2: analytics2,
+      section3: analytics3,
+      section4: analytics4,
+    };
+
     const data = await MockTest.findByIdAndUpdate(
       mockId,
       {
         isSubmitted: true,
+        result: analytics,
       },
       { new: true }
     );
-    res.status(200).send({ success: true, message: "Test End", data });
+
+    res.status(200).send({
+      success: true,
+      message: "Test Successfully Submitted",
+      // analytics,
+    });
+    // res.status(200).send({ success: true, message: "Test End", data });
   } catch (error) {
     console.log(error.message);
     res.status(400).send({ success: false, message: error.message });

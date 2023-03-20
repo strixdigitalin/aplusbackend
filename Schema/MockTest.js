@@ -11,6 +11,7 @@ const userdata = new mongoose.Schema(
       ref: "user",
     },
     isSubmitted: {
+      type: Boolean,
       default: false,
     },
     answers: [
