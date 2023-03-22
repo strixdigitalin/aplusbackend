@@ -4,7 +4,7 @@ const userdata = new mongoose.Schema(
   {
     banner: [{ type: String }],
     logo: { type: String },
-    pdf: { type: String },
+    pdf: [],
   },
   { timestamps: true }
 );

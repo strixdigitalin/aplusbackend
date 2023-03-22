@@ -3,6 +3,8 @@ const SendError = require("../Middlewares/Response");
 const Assets = require("../Schema/Assets");
 const GLOBAL = require("../GLOBAL_CONSTANTS");
 const ImageSchema = require("../Schema/ImageSchema");
+const PdfsSchema = require("../Schema/PdfsSchema");
+const BannerSchema = require("../Schema/BannerSchema");
 const { Asset_ID } = GLOBAL;
 const createAsset = async (req, res, next) => {
   const testData = req.body;
@@ -16,19 +18,32 @@ const createAsset = async (req, res, next) => {
   let tempData = req.files.image.map((item) => {
     return item.filename;
   });
+  const { assetId } = req.query;
+  console.log(tempData, assetId, "<<< this is temp data");
   try {
-    const data = await Assets.findByIdAndUpdate(
-      Asset_ID,
-      {
+    if (assetId) {
+      const data = await Assets.findByIdAndUpdate(
+        assetId,
+        {
+          banner: tempData,
+        },
+        { new: true }
+      );
+      res.status(200).send({
+        success: true,
+        message: "Assets updated",
+        data,
+      });
+    } else {
+      const data = await Assets.create({
         banner: tempData,
-      },
-      { new: true }
-    );
-    res.status(200).send({
-      success: true,
-      message: "Assets Created",
-      data,
-    });
+      });
+      res.status(200).send({
+        success: true,
+        message: "Assets Created",
+        data,
+      });
+    }
   } catch (e) {
     console.log(e);
     SendError(res, e);
@@ -46,7 +61,7 @@ const createLogo = async (req, res, next) => {
   try {
     console.log(req.files);
     const data = await Assets.findByIdAndUpdate(
-      Asset_ID,
+      req.query.assetId,
       {
         logo: req.files.image[0].filename,
       },
@@ -63,36 +78,114 @@ const createLogo = async (req, res, next) => {
   }
 };
 const createPdf = async (req, res, next) => {
-  const testData = req.body;
   if (!req.files) {
     return res
       .status(400)
       .send({ success: false, message: "File is required" });
   }
+  let tempData = req.files.pdf.map((item) => {
+    return item.filename;
+  });
 
-  try {
-    console.log(req.files);
-    const data = await Assets.findByIdAndUpdate(
-      Asset_ID,
-      {
-        pdf: req.files.pdf[0].filename,
-      },
-      { new: true }
-    );
-    res.status(200).send({
-      success: true,
-      message: "Assets Created",
-      data,
-    });
-  } catch (e) {
-    console.log(e);
-    SendError(res, e);
+  const data = await PdfsSchema.create({
+    link: tempData[0],
+    title: req.body?.title ? req.body.title : "",
+  });
+  res.status(200).send({
+    success: true,
+    data,
+  });
+  // const testData = req.body;
+  // if (!req.files) {
+  //   return res
+  //     .status(400)
+  //     .send({ success: false, message: "File is required" });
+  // }
+
+  // try {
+  //   console.log(req.files);
+  //   let tempData = req.files.pdf.map((item) => {
+  //     return item.filename;
+  //   });
+
+  //   const data = await Assets.findByIdAndUpdate(
+  //     req.query.assetId,
+  //     { pdf: tempData },
+  //     { new: true }
+  //   );
+  //   res.status(200).send({
+  //     success: true,
+  //     message: "Assets Created",
+  //     data,
+  //   });
+  // } catch (e) {
+  //   console.log(e);
+  //   SendError(res, e);
+  // }
+};
+const createBanner = async (req, res, next) => {
+  if (!req.files) {
+    return res
+      .status(400)
+      .send({ success: false, message: "File is required" });
   }
+  let tempData = req.files.image.map((item) => {
+    return item.filename;
+  });
+
+  const data = await BannerSchema.create({
+    link: tempData[0],
+    title: req.body?.title ? req.body.title : "",
+  });
+  res.status(200).send({
+    success: true,
+    data,
+  });
+  // const testData = req.body;
+  // if (!req.files) {
+  //   return res
+  //     .status(400)
+  //     .send({ success: false, message: "File is required" });
+  // }
+
+  // try {
+  //   console.log(req.files);
+  //   let tempData = req.files.pdf.map((item) => {
+  //     return item.filename;
+  //   });
+
+  //   const data = await Assets.findByIdAndUpdate(
+  //     req.query.assetId,
+  //     { pdf: tempData },
+  //     { new: true }
+  //   );
+  //   res.status(200).send({
+  //     success: true,
+  //     message: "Assets Created",
+  //     data,
+  //   });
+  // } catch (e) {
+  //   console.log(e);
+  //   SendError(res, e);
+  // }
+};
+
+const getPDF = async (req, res) => {
+  res.status(200).send({
+    success: true,
+    data: await PdfsSchema.find(req.query),
+  });
+};
+const getBanner = async (req, res) => {
+  res.status(200).send({
+    success: true,
+    data: await BannerSchema.find(req.query),
+  });
 };
 
 const getAsset = async (req, res, next) => {
   try {
-    const data = await Assets.find({ _id: Asset_ID });
+    const data = await Assets.find(req.query);
     if (data.length == 0) {
       return res
         .status(400)
@@ -147,6 +240,9 @@ const getAllQuestionImages = async (req, res) => {
     res.status(400).send({ success: false, message: error.message });
   }
 };
+
+// ----------
+
 module.exports = {
   createAsset,
   createPdf,
@@ -154,6 +250,9 @@ module.exports = {
   getAsset,
   uploadImages,
   getAllQuestionImages,
+  getPDF,
+  createBanner,
+  getBanner,
 };
 
 // module.exports = { createUser, userLogin, getUserDetails, updateUserDetails }

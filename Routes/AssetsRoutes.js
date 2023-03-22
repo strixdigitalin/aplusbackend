@@ -6,6 +6,9 @@ const {
   createPdf,
   uploadImages,
   getAllQuestionImages,
+  getPDF,
+  createBanner,
+  getBanner,
 } = require("../Controlers/AssetControler");
 const {
   CreateUser,
@@ -20,17 +23,24 @@ const { createTest, getTest } = require("../Controlers/TestControler");
 const router = express.Router();
 const upload = require("../Middlewares/Multer");
 
-router.post(
-  "/banner",
-  upload.fields([{ name: "image", maxCount: 5 }]),
-  createAsset
-);
+// router.post(
+//   "/banner",
+//   upload.fields([{ name: "image", maxCount: 5 }]),
+//   createAsset
+// );
 router.post(
   "/logo",
   upload.fields([{ name: "image", maxCount: 5 }]),
   createLogo
 );
 router.post("/pdf", upload.fields([{ name: "pdf", maxCount: 2 }]), createPdf);
+router.post(
+  "/banner",
+  upload.fields([{ name: "image", maxCount: 2 }]),
+  createBanner
+);
+router.get("/get/pdf", getPDF);
+router.get("/get/banner", getBanner);
 router.get("/get", getAsset);
 router.get("/question", getAllQuestionImages);
 router.post(
