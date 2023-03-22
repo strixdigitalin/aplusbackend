@@ -30,7 +30,10 @@ const startMockTest = async (req, res) => {
 };
 const getMockTest = async (req, res) => {
   try {
-    const data = await MockTest.find(req.query).populate("answers.question").sort({ createdAt: 1 });
+    const data = await MockTest.find(req.query)
+      .populate("answers.question")
+      .populate("test")
+      .sort({ createdAt: 1 });
     res.status(200).send({ success: true, message: "All test", data });
   } catch (error) {
     console.log(error);
