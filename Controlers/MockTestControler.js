@@ -16,13 +16,28 @@ const startMockTest = async (req, res) => {
       return res
         .status(400)
         .send({ success: false, message: "testId, userId both are required" });
+    const questions = await Question.find({ testId });
+    let manageArray = questions.map((item) => {
+      return {
+        question: item._doc._id,
+        answered: false,
+        notAnswered: false,
+        visited: false,
+        markedReview: false,
+        answeredAndReview: false,
+      };
+    });
     const savedData = await MockTest.create({
       user: userId,
       test: testId,
+      answers: manageArray,
     });
-    res
-      .status(200)
-      .send({ success: true, message: "Session Created", data: savedData });
+    res.status(200).send({
+      success: true,
+      message: "Session Created",
+      data: savedData,
+      manageArray,
+    });
   } catch (error) {
     console.log(error.message);
     res.status(400).send({ success: false, message: error.message, data: [] });
@@ -45,7 +60,7 @@ const submitAnswer = async (req, res, next) => {
   const { testId, mockId, questionId, answer } = req.body;
   // const checkExist = await MockTest.find({ "answers.question": questionId });
   const data = await MockTest.findOneAndUpdate(
-    { mockId, "answers.question": questionId, _id: mockId },
+    { mockId, "answers.question._id": questionId, _id: mockId },
     {
       $set: {
         "answers.$.response": answer,

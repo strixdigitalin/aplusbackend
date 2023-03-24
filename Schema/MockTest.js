@@ -18,6 +18,11 @@ const userdata = new mongoose.Schema(
       {
         question: { type: ObjectId, ref: "question" },
         response: Number,
+        answered: Boolean,
+        notAnswered: Boolean,
+        visited: Boolean,
+        markedReview: Boolean,
+        answeredAndReview: Boolean,
       },
     ],
     result: {},
