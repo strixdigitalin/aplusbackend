@@ -62,6 +62,18 @@ const getCourse = async (req, res, next) => {
     SendError(res, e);
   }
 };
+const deleteCourse = async (req, res, next) => {
+  const { id } = req.params;
+  const test = await Test.find({ course: id });
+  if (!test.length) {
+    const data = await CourseSchema.findOneAndDelete({ _id: id });
+    res.status(200).send({ success: true, message: " Course Deleted", data });
+  } else {
+    res
+      .status(400)
+      .send({ success: false, message: "Course can't be deleted" });
+  }
+};
 
 // const userLogin = async function (req, res) {
 //   try {
@@ -117,6 +129,7 @@ const getCourse = async (req, res, next) => {
 module.exports = {
   getCourse,
   createCourse,
+  deleteCourse,
 };
 
 // module.exports = { createUser, userLogin, getUserDetails, updateUserDetails }

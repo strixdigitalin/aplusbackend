@@ -141,34 +141,19 @@ const createBanner = async (req, res, next) => {
     success: true,
     data,
   });
-  // const testData = req.body;
-  // if (!req.files) {
-  //   return res
-  //     .status(400)
-  //     .send({ success: false, message: "File is required" });
-  // }
-
-  // try {
-  //   console.log(req.files);
-  //   let tempData = req.files.pdf.map((item) => {
-  //     return item.filename;
-  //   });
-
-  //   const data = await Assets.findByIdAndUpdate(
-  //     req.query.assetId,
-  //     { pdf: tempData },
-  //     { new: true }
-  //   );
-  //   res.status(200).send({
-  //     success: true,
-  //     message: "Assets Created",
-  //     data,
-  //   });
-  // } catch (e) {
-  //   console.log(e);
-  //   SendError(res, e);
-  // }
 };
+const deleteBanner = async (req, res) => {
+  const { id } = req.params;
+  const data = await BannerSchema.findOneAndDelete({ _id: id });
+  res.status(200).send({ success: true, message: "Banner Deleted", data });
+};
+const deletePdf = async (req, res) => {
+  const { id } = req.params;
+  const data = await PdfsSchema.findOneAndDelete({ _id: id });
+  res.status(200).send({ success: true, message: "PDF Deleted", data });
+};
+
+// ----------------------
 
 const getPDF = async (req, res) => {
   res.status(200).send({
@@ -182,6 +167,8 @@ const getBanner = async (req, res) => {
     data: await BannerSchema.find(req.query),
   });
 };
+
+// -----------
 
 const getAsset = async (req, res, next) => {
   try {
@@ -252,6 +239,8 @@ module.exports = {
   getAllQuestionImages,
   getPDF,
   createBanner,
+  deletePdf,
+  deleteBanner,
   getBanner,
 };
 

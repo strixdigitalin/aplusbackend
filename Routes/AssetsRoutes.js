@@ -9,6 +9,8 @@ const {
   getPDF,
   createBanner,
   getBanner,
+  deleteBanner,
+  deletePdf,
 } = require("../Controlers/AssetControler");
 const {
   CreateUser,
@@ -48,6 +50,9 @@ router.post(
   upload.fields([{ name: "image", maxCount: 10 }]),
   uploadImages
 );
+
+router.delete("/banner/:id", deleteBanner);
+router.delete("/pdf/:id", deletePdf);
 
 // router.post("/login", upload.none(), userLogin);
 // router.post("/user", upload.none(), userLogin);

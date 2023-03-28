@@ -89,10 +89,22 @@ const addQuestionInTest = async (req, res, next) => {
     SendError(res, e);
   }
 };
+
+const deleteTest = async (req, res, next) => {
+  const { id } = req.params;
+  // const test = await Test.find({ subCategory: id });
+  if (true) {
+    const data = await Test.findOneAndDelete({ _id: id });
+    res.status(200).send({ success: true, message: "Sub Category", data });
+  } else {
+  }
+};
+
 module.exports = {
   getTest,
   createTest,
   addQuestionInTest,
+  deleteTest,
 };
 
 // module.exports = { createUser, userLogin, getUserDetails, updateUserDetails }

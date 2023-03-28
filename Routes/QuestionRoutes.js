@@ -16,12 +16,12 @@ const upload = require("../Middlewares/Multer");
 router.post("/create", createQuestion);
 router.post("/upload-excel", uploadExcel);
 router.get("/get", getQuestions);
-router.patch(
+router.put(
   "/update/:questionId",
 
   updateQuestion
 );
-router.patch(
+router.put(
   "/media",
   upload.fields([{ name: "image", maxCount: 1 }]),
   updateQuestionMedia

@@ -17,6 +17,7 @@ const BlogRoutes = require("./Routes/BlogRoutes");
 const FaqRoutes = require("./Routes/FaqRoutes");
 const SubCAtegory = require("./Routes/SubCategoriesRoutes");
 const MockRoutes = require("./Routes/MockTestRoutes");
+const SubscriptionRoutes = require("./Routes/SubscriptionRoutes");
 // ----------------------------------------------------------------------------------------------
 
 // -------------------------------------------------------- API VALIDATIONS-----------------------
@@ -57,6 +58,7 @@ app.use("/blog", BlogRoutes);
 app.use("/faq", FaqRoutes);
 app.use("/sub-category", SubCAtegory);
 app.use("/mock", MockRoutes);
+app.use("/subscription", SubscriptionRoutes);
 // ------------------------------------------------------
 
 const port = process.env.PORT || 5000;

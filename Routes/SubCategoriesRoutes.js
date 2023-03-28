@@ -10,6 +10,8 @@ const {
 const {
   createSubCategory,
   getSubCategory,
+  groupByCategory,
+  deleteCategory,
 } = require("../Controlers/SubCategoryControler");
 const { createTest, getTest } = require("../Controlers/TestControler");
 const router = express.Router();
@@ -20,7 +22,13 @@ router.post(
   upload.fields([{ name: "image", maxCount: 1 }]),
   createSubCategory
 );
+router.get(
+  "/group",
+  upload.fields([{ name: "image", maxCount: 1 }]),
+  groupByCategory
+);
 
 router.get("/get", getSubCategory);
+router.delete("/delete/:id", deleteCategory);
 
 module.exports = router;

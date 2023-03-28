@@ -176,7 +176,10 @@ const updateQuestionMedia = async (req, res) => {
     const { option } = req.body;
     if (lang == "eng") {
       let options = questionData.english.options;
-      options[option - 1].isImage = image[0].filename;
+
+      options[option - 1].isImage = image
+        ? image[0].filename
+        : options[option - 1].isImage;
       options[option - 1].option = fieldText;
       console.log(options, "<<< this is new options");
       const data = await Question.updateOne(

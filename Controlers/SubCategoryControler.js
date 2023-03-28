@@ -63,6 +63,53 @@ const getSubCategory = async (req, res, next) => {
   }
 };
 
+const groupByCategory = async (req, res) => {
+  try {
+    const data = await SubCategoriesSchema.aggregate([
+      {
+        $lookup: {
+          from: "category",
+          localField: "_id",
+          foreignField: "parentCategory",
+          as: "category",
+        },
+      },
+      // {
+      //   $group: {
+      //     _id: "$parentCategory",
+      //     subCategories: {
+      //       $addToSet: {
+      //         subCategoryName: "$subCategoryName",
+      //         _id: "$_id",
+      //         image: "$image",
+      //       },
+      //     },
+      //   },
+      // },
+    ]);
+    res.status(200).send({ success: true, message: "Done,", data });
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+const deleteCategory = async (req, res, next) => {
+  const { id } = req.params;
+  const test = await Test.find({ subCategory: id });
+  if (!test.length) {
+    const data = await SubCategoriesSchema.findOneAndDelete({ _id: id });
+    res
+      .status(200)
+      .send({ success: true, message: "Sub Category Deleted", data });
+  } else {
+    res.status(400).send({
+      success: false,
+      message: "Category can't be deleted",
+      test,
+    });
+  }
+};
+
 // const userLogin = async function (req, res) {
 //   try {
 //     const loginDetails = req.body;
@@ -117,6 +164,8 @@ const getSubCategory = async (req, res, next) => {
 module.exports = {
   getSubCategory,
   createSubCategory,
+  groupByCategory,
+  deleteCategory,
 };
 
 // module.exports = { createUser, userLogin, getUserDetails, updateUserDetails }

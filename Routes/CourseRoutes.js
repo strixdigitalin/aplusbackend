@@ -7,7 +7,11 @@ const {
   createCategory,
   getCategory,
 } = require("../Controlers/CategoryControler");
-const { getCourse, createCourse } = require("../Controlers/CourseControler");
+const {
+  getCourse,
+  createCourse,
+  deleteCourse,
+} = require("../Controlers/CourseControler");
 const { createTest, getTest } = require("../Controlers/TestControler");
 const router = express.Router();
 const upload = require("../Middlewares/Multer");
@@ -18,6 +22,7 @@ router.post(
   createCourse
 );
 router.get("/get", getCourse);
+router.delete("/delete/:id", deleteCourse);
 // router.post("/login", upload.none(), userLogin);
 // router.post("/user", upload.none(), userLogin);
 // router.post("/signup", upload.none(), createUser2);

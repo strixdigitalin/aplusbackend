@@ -6,6 +6,7 @@ const {
 const {
   createCategory,
   getCategory,
+  deleteCategory,
 } = require("../Controlers/CategoryControler");
 const { createTest, getTest } = require("../Controlers/TestControler");
 const router = express.Router();
@@ -17,6 +18,7 @@ router.post(
   createCategory
 );
 router.get("/get", getCategory);
+router.delete("/delete/:id", deleteCategory);
 // router.post("/login", upload.none(), userLogin);
 // router.post("/user", upload.none(), userLogin);
 // router.post("/signup", upload.none(), createUser2);

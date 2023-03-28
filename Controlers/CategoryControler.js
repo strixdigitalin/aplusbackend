@@ -45,7 +45,7 @@ const createCategory = async (req, res, next) => {
 
 const getCategory = async (req, res, next) => {
   try {
-    const data = await Categories.find(req.query);
+    const data = await Categories.find(req.query).populate("course");
     if (data.length == 0) {
       return res
         .status(400)
@@ -59,6 +59,19 @@ const getCategory = async (req, res, next) => {
   } catch (e) {
     console.log(e);
     SendError(res, e);
+  }
+};
+
+const deleteCategory = async (req, res, next) => {
+  const { id } = req.params;
+  const test = await Test.find({ category: id });
+  if (!test.length) {
+    const data = await Categories.findOneAndDelete({ _id: id });
+    res.status(200).send({ success: true, message: " Category Deleted", data });
+  } else {
+    res
+      .status(400)
+      .send({ success: false, message: "Category can't be deleted" });
   }
 };
 
@@ -115,6 +128,7 @@ const getCategory = async (req, res, next) => {
 // };
 module.exports = {
   getCategory,
+  deleteCategory,
   createCategory,
 };
 

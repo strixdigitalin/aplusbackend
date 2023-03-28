@@ -7,6 +7,7 @@ const {
   createTest,
   getTest,
   addQuestionInTest,
+  deleteTest,
 } = require("../Controlers/TestControler");
 const router = express.Router();
 const upload = require("../Middlewares/Multer");
@@ -14,6 +15,7 @@ const upload = require("../Middlewares/Multer");
 router.post("/create", createTest);
 router.post("/add-question", upload.none(), addQuestionInTest);
 router.get("/get", getTest);
+router.delete("/delete/:id", deleteTest);
 // router.post("/login", upload.none(), userLogin);
 // router.post("/user", upload.none(), userLogin);
 // router.post("/signup", upload.none(), createUser2);
