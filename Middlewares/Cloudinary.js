@@ -11,7 +11,7 @@ const uploadOnCloudinary = async (file) => {
   try {
     console.log("before clound", file);
     const data = await cloudinary.uploader.upload(file.path);
-    console.log(data, "<<<thsis is data cloudinary");
+    console.log(data, "<<<thsis is data in cloudinary ");
     return data.secure_url;
   } catch (error) {
     console.log(error.message);
