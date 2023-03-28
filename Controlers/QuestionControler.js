@@ -6,6 +6,7 @@ const validator = require("../Middlewares/Validator");
 const Test = require("../Schema/Test");
 const Categories = require("../Schema/Categories");
 const Question = require("../Schema/Question");
+const uploadOnCloudinary = require("../Middlewares/Cloudinary");
 
 const createQuestion = async (req, res, next) => {
   const testData = req.body;
@@ -129,6 +130,7 @@ const updateQuestionMedia = async (req, res) => {
     let { question, lang, questionId, fieldText } = req.body;
     const { image } = req.files;
     console.log(req.body);
+
     if (question == 1) {
       if (lang == "eng") {
         let values = {};
@@ -136,7 +138,9 @@ const updateQuestionMedia = async (req, res) => {
           values = { ...values, "english.question": fieldText };
         }
         if (image) {
-          values = { ...values, "english.isImage": image[0].filename };
+          const imageUrl = await uploadOnCloudinary(req.files.image[0]);
+
+          values = { ...values, "english.isImage": imageUrl };
         }
         const data = await Question.findByIdAndUpdate(
           questionId,
@@ -155,7 +159,9 @@ const updateQuestionMedia = async (req, res) => {
           values = { ...values, "hindi.question": fieldText };
         }
         if (image) {
-          values = { ...values, "hindi.isImage": image[0].filename };
+          const imageUrl = await uploadOnCloudinary(req.files.image[0]);
+
+          values = { ...values, "hindi.isImage": imageUrl };
         }
         const data = await Question.findByIdAndUpdate(
           questionId,
@@ -177,8 +183,8 @@ const updateQuestionMedia = async (req, res) => {
     if (lang == "eng") {
       let options = questionData.english.options;
 
-      options[option - 1].isImage = image
-        ? image[0].filename
+      image
+        ? await uploadOnCloudinary(req.files.image[0])
         : options[option - 1].isImage;
       options[option - 1].option = fieldText;
       console.log(options, "<<< this is new options");

@@ -6,6 +6,7 @@ const validator = require("../Middlewares/Validator");
 const Test = require("../Schema/Test");
 const Categories = require("../Schema/Categories");
 const SubCategoriesSchema = require("../Schema/SubCategoriesSchema");
+const uploadOnCloudinary = require("../Middlewares/Cloudinary");
 
 const createSubCategory = async (req, res, next) => {
   const testData = req.body;
@@ -23,6 +24,7 @@ const createSubCategory = async (req, res, next) => {
       .send({ success: false, message: "Image is required" });
   }
   const { subCategoryName } = testData;
+  const url = await uploadOnCloudinary(req.files.image[0]);
   try {
     if (!validator.isValid(subCategoryName)) {
       return res
@@ -31,7 +33,7 @@ const createSubCategory = async (req, res, next) => {
     }
     const savedData = await SubCategoriesSchema.create({
       ...testData,
-      image: uploadedFile.filename,
+      image: url,
     });
     res.status(200).send({
       success: true,

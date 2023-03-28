@@ -5,6 +5,7 @@ const GLOBAL = require("../GLOBAL_CONSTANTS");
 const ImageSchema = require("../Schema/ImageSchema");
 const PdfsSchema = require("../Schema/PdfsSchema");
 const BannerSchema = require("../Schema/BannerSchema");
+const uploadOnCloudinary = require("../Middlewares/Cloudinary");
 const { Asset_ID } = GLOBAL;
 const createAsset = async (req, res, next) => {
   const testData = req.body;
@@ -132,9 +133,9 @@ const createBanner = async (req, res, next) => {
   let tempData = req.files.image.map((item) => {
     return item.filename;
   });
-
+  const imageurl = await uploadOnCloudinary(req.files.image[0]);
   const data = await BannerSchema.create({
-    link: tempData[0],
+    link: imageurl,
     title: req.body?.title ? req.body.title : "",
   });
   res.status(200).send({

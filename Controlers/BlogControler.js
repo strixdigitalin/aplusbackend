@@ -6,6 +6,7 @@ const validator = require("../Middlewares/Validator");
 const Test = require("../Schema/Test");
 const Categories = require("../Schema/Categories");
 const BlogSchema = require("../Schema/BlogSchema");
+const uploadOnCloudinary = require("../Middlewares/Cloudinary");
 
 const createBlog = async (req, res, next) => {
   const testData = req.body;
@@ -41,10 +42,11 @@ const createBlog = async (req, res, next) => {
         .status(400)
         .send({ status: false, message: "description is required" });
     }
+    const imageUrl = await uploadOnCloudinary(req.files.image[0]);
 
     const savedData = await BlogSchema.create({
       ...testData,
-      image: uploadedFile.filename,
+      image: imageUrl,
     });
     res.status(200).send({
       success: true,

@@ -6,6 +6,7 @@ const validator = require("../Middlewares/Validator");
 const Test = require("../Schema/Test");
 const Categories = require("../Schema/Categories");
 const CourseSchema = require("../Schema/CourseSchema");
+const uploadOnCloudinary = require("../Middlewares/Cloudinary");
 
 const createCourse = async (req, res, next) => {
   const testData = req.body;
@@ -23,6 +24,8 @@ const createCourse = async (req, res, next) => {
       .send({ success: false, message: "Image is required" });
   }
   const { courseName } = testData;
+  const imageUrl = await uploadOnCloudinary(req.files.image[0]);
+
   try {
     if (!validator.isValid(courseName)) {
       return res
@@ -31,7 +34,7 @@ const createCourse = async (req, res, next) => {
     }
     const savedData = await CourseSchema.create({
       ...testData,
-      image: uploadedFile.filename,
+      image: imageUrl,
     });
     res.status(200).send({
       success: true,

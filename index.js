@@ -18,6 +18,7 @@ const FaqRoutes = require("./Routes/FaqRoutes");
 const SubCAtegory = require("./Routes/SubCategoriesRoutes");
 const MockRoutes = require("./Routes/MockTestRoutes");
 const SubscriptionRoutes = require("./Routes/SubscriptionRoutes");
+const MentorRoutes = require("./Routes/MentorProgramRoutes");
 // ----------------------------------------------------------------------------------------------
 
 // -------------------------------------------------------- API VALIDATIONS-----------------------
@@ -59,6 +60,7 @@ app.use("/faq", FaqRoutes);
 app.use("/sub-category", SubCAtegory);
 app.use("/mock", MockRoutes);
 app.use("/subscription", SubscriptionRoutes);
+app.use("/mentor", MentorRoutes);
 // ------------------------------------------------------
 
 const port = process.env.PORT || 5000;

@@ -5,6 +5,7 @@ const User = require("../Schema/User");
 const validator = require("../Middlewares/Validator");
 const Test = require("../Schema/Test");
 const Categories = require("../Schema/Categories");
+const uploadOnCloudinary = require("../Middlewares/Cloudinary");
 
 const createCategory = async (req, res, next) => {
   const testData = req.body;
@@ -16,11 +17,13 @@ const createCategory = async (req, res, next) => {
   const { image } = req.files;
   console.log(image, "<<< this is image");
   const uploadedFile = image[0];
+
   if (!image) {
     return res
       .status(400)
       .send({ success: false, message: "Image is required" });
   }
+  const imageUrl = await uploadOnCloudinary(req.files.image[0]);
   const { categoryName } = testData;
   try {
     if (!validator.isValid(categoryName)) {
@@ -30,7 +33,7 @@ const createCategory = async (req, res, next) => {
     }
     const savedData = await Categories.create({
       ...testData,
-      image: uploadedFile.filename,
+      image: imageUrl,
     });
     res.status(200).send({
       success: true,
