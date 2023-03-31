@@ -59,16 +59,40 @@ const getMockTest = async (req, res) => {
 const submitAnswer = async (req, res, next) => {
   const { testId, mockId, questionId, answer } = req.body;
   // const checkExist = await MockTest.find({ "answers.question": questionId });
-  const data = await MockTest.findOneAndUpdate(
-    { mockId, "answers.question._id": questionId, _id: mockId },
-    {
-      $set: {
-        "answers.$.response": answer,
+  try {
+    const data = await MockTest.updateOne(
+      {
+        _id: mockId,
+        answers: {
+          $elemMatch: {
+            question: questionId,
+          },
+        },
       },
-    },
-    { new: true }
-  );
-  console.log(data, "<<< this is data");
+      {
+        $set: {
+          "answers.$.response": answer,
+          "answer.$.answered": true,
+          "answers.$.visited": true,
+        },
+      },
+      {
+        new: true,
+      }
+      // {
+      //   $set: {
+      //     "answers.$.response": answer,
+      //   },
+      // },
+      // { new: true }
+    );
+    console.log(data, "<<< this is data");
+    res.status(200).send({ data });
+    return null;
+  } catch (error) {
+    res.status(400).send({ success: false, error: error.message });
+  }
+
   if (data != null) {
     res.status(200).send({ success: true, message: "updated", data });
   } else {
