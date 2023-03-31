@@ -58,6 +58,11 @@ const getMockTest = async (req, res) => {
 
 const submitAnswer = async (req, res, next) => {
   const { testId, mockId, questionId, answer } = req.body;
+  // let markedReview
+  let markedReview = false;
+  if (req.body.markedReview) {
+    markedReview = req.body.markedReview;
+  }
   // const checkExist = await MockTest.find({ "answers.question": questionId });
   try {
     const data = await MockTest.updateOne(
@@ -72,7 +77,8 @@ const submitAnswer = async (req, res, next) => {
       {
         $set: {
           "answers.$.response": answer,
-          "answer.$.answered": true,
+          "answers.$.answered": answer == null ? null : true,
+          "answers.$.markedReview": markedReview,
           "answers.$.visited": true,
         },
       },
@@ -103,6 +109,7 @@ const submitAnswer = async (req, res, next) => {
           answers: {
             question: questionId,
             response: answer,
+            answered: true,
           },
         },
       },
@@ -111,6 +118,62 @@ const submitAnswer = async (req, res, next) => {
     res.status(200).send({ success: true, message: "updated", data });
   }
 };
+// const submitAnswer = async (req, res, next) => {
+//   const { testId, mockId, questionId, answer } = req.body;
+//   // const checkExist = await MockTest.find({ "answers.question": questionId });
+//   try {
+//     const data = await MockTest.updateOne(
+//       {
+//         _id: mockId,
+//         answers: {
+//           $elemMatch: {
+//             question: questionId,
+//           },
+//         },
+//       },
+//       {
+//         $set: {
+//           "answers.$.response": answer,
+//           "answers.$.answered": true,
+//           "answers.$.visited": true,
+//         },
+//       },
+//       {
+//         new: true,
+//       }
+//       // {
+//       //   $set: {
+//       //     "answers.$.response": answer,
+//       //   },
+//       // },
+//       // { new: true }
+//     );
+//     console.log(data, "<<< this is data");
+//     res.status(200).send({ data });
+//     return null;
+//   } catch (error) {
+//     res.status(400).send({ success: false, error: error.message });
+//   }
+
+//   if (data != null) {
+//     res.status(200).send({ success: true, message: "updated", data });
+//   } else {
+//     const data = await MockTest.findByIdAndUpdate(
+//       mockId,
+//       {
+//         $push: {
+//           answers: {
+//             question: questionId,
+//             response: answer,
+//             answered: true,
+//           },
+//         },
+//       },
+//       { new: true }
+//     );
+//     res.status(200).send({ success: true, message: "updated", data });
+//   }
+// };
 const getAnswerOfQuestion = async (req, res, next) => {
   try {
     const { questionId, mockId } = req.params;
@@ -126,6 +189,7 @@ const getAnswerOfQuestion = async (req, res, next) => {
       });
     } else {
       const answer = data.answers.filter((item) => item.question == questionId);
+
       res.status(200).send({
         success: true,
         message: "Answer by Answer Id",
