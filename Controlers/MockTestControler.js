@@ -219,7 +219,11 @@ const submitMockTest = async (req, res) => {
     //     correctAnswer = [...correctAnswer, item];
     //   else wrongAnswers = [...wrongAnswers, item];
     // });
-    const checkRes = (item) => item.question.correctAnswer == item.response;
+    const checkRes = (item) => {
+      if (!item.response) return null;
+      if (item.question.correctAnswer == item.response) return true;
+      return false;
+    };
     let section1 = [];
     let section2 = [];
     let section3 = [];
@@ -280,6 +284,7 @@ const submitMockTest = async (req, res) => {
       const total = oneSection.length;
       const correct = oneSection.filter((item) => item.isCorrect).length;
       const inCorrect = total - correct;
+
       const totalQuestion = await Question.count({
         // testId: mockData.test,
         testId: `${mockData.test}`,
