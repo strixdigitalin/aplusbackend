@@ -232,6 +232,7 @@ const submitMockTest = async (req, res) => {
             question: item.question,
             response: item.response,
             _id: item._id,
+            visited: item.visited,
             isCorrect: checkRes(item),
           },
         ];
@@ -242,17 +243,31 @@ const submitMockTest = async (req, res) => {
           {
             question: item.question,
             response: item.response,
+            visited: item.visited,
             _id: item._id,
             isCorrect: checkRes(item),
           },
         ];
       }
       if (item.question.section == 3) {
-        section2 = [
+        section3 = [
           ...section3,
           {
             question: item.question,
             response: item.response,
+            visited: item.visited,
+            _id: item._id,
+            isCorrect: checkRes(item),
+          },
+        ];
+      }
+      if (item.question.section == 4) {
+        section4 = [
+          ...section4,
+          {
+            question: item.question,
+            response: item.response,
+            visited: item.visited,
             _id: item._id,
             isCorrect: checkRes(item),
           },
