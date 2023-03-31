@@ -283,7 +283,11 @@ const submitMockTest = async (req, res) => {
       console.log(mockData.test, "<< this i sone section");
       const total = oneSection.length;
       const correct = oneSection.filter((item) => item.isCorrect).length;
-      const inCorrect = total - correct;
+      const inCorrect = oneSection.filter(
+        (item) => item.isCorrect == false
+      ).length;
+
+      const unAttempted = total - correct - inCorrect;
 
       const totalQuestion = await Question.count({
         // testId: mockData.test,
@@ -293,6 +297,7 @@ const submitMockTest = async (req, res) => {
       let send = {
         total,
         correct,
+        unAttempted,
         inCorrect,
         totalQuestion,
       };
