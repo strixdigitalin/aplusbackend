@@ -8,7 +8,7 @@ const createProgram = async (req, res, next) => {
     if (!req.files)
       return res
         .status(400)
-        .send({ success: false, message: "Image is required" });
+        .send({ success: false, message: "Image is rsequired" });
     if (!req.files.image.length)
       return res
         .status(400)
