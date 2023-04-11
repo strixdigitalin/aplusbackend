@@ -74,8 +74,21 @@ const getUser = async (req, res, next) => {
 //     return res.status(500).send({ status: false, error: err.message });
 //   }
 // };
+
+const updateUser = async (req, res) => {
+  try {
+    const data = await User.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
+
+    res.status(200).send({ success: true, message: "User updated", data });
+  } catch (error) {
+    res.status(400).send({ success: false, message: error.message });
+  }
+};
 module.exports = {
   getUser,
+  updateUser,
 };
 
 // module.exports = { createUser, userLogin, getUserDetails, updateUserDetails }

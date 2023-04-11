@@ -12,6 +12,7 @@ const createQuestion = async (req, res, next) => {
   const testData = req.body;
 
   const { english, hindi } = testData;
+  console.log(testData, "<<<testid");
 
   try {
     if (!validator.isValid(english.question)) {
@@ -19,11 +20,12 @@ const createQuestion = async (req, res, next) => {
         .status(400)
         .send({ status: false, message: "Question is required" });
     }
-    if (!validator.isValid(hindi.question)) {
-      return res
-        .status(400)
-        .send({ status: false, message: "Question Hindi is required" });
-    }
+
+    // if (!validator.isValid(hindi.question)) {
+    //   return res
+    //     .status(400)
+    //     .send({ status: false, message: "Question Hindi is required" });
+    // }
     if (!validator.isValid(english.options)) {
       return res
         .status(400)
@@ -39,7 +41,7 @@ const createQuestion = async (req, res, next) => {
     });
     res.status(200).send({
       success: true,
-      message: "Category Created",
+      message: "Question Created",
       data: savedData._doc,
     });
   } catch (e) {
@@ -183,10 +185,11 @@ const updateQuestionMedia = async (req, res) => {
     if (lang == "eng") {
       let options = questionData.english.options;
 
-      image
+      let imageURL = image?.length
         ? await uploadOnCloudinary(req.files.image[0])
         : options[option - 1].isImage;
       options[option - 1].option = fieldText;
+      options[option - 1].isImage = imageURL;
       console.log(options, "<<< this is new options");
       const data = await Question.updateOne(
         { _id: questionId },
@@ -201,7 +204,11 @@ const updateQuestionMedia = async (req, res) => {
     }
     if (lang == "hindi") {
       let options = questionData.hindi.options;
-      options[+option - 1].isImage = image[0].filename;
+      let imageURL = image?.length
+        ? await uploadOnCloudinary(req.files.image[0])
+        : options[option - 1].isImage;
+      options[option - 1].option = fieldText;
+      options[option - 1].isImage = imageURL;
       console.log(options, "<<< this is new options");
       const data = await Question.updateOne(
         { _id: questionId },

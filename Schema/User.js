@@ -30,6 +30,10 @@ const userdata = new mongoose.Schema(
         ref: "test",
       },
     ],
+    subscription: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "subscription",
+    },
   },
   { timestamps: true }
 );
