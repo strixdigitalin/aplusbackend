@@ -90,8 +90,8 @@ const createPdf = async (req, res, next) => {
   const imageurl = await uploadOnCloudinary(req.files.pdf[0]);
 
   const data = await PdfsSchema.create({
-    // link: tempData[0],
-    link: imageurl,
+    link: tempData[0],
+    // link: imageurl,
     title: req.body?.title ? req.body.title : "",
   });
   res.status(200).send({
