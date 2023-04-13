@@ -60,7 +60,13 @@ const updateSubsCription = async (req, res, next) => {
 const subscribe = async (req, res) => {
   try {
     const { id } = req.params;
-    const { duration, subscription } = req.body;
+    const { duration, subscription, value } = req.body;
+    let getDuration = () => {
+      if (duration == 1) return "1month";
+      if (duration == 3) return "3month";
+      if (duration == 6) return "6month";
+      if (duration == 12) return "yearly";
+    };
     if (!id)
       return res
         .status(400)
@@ -76,11 +82,12 @@ const subscribe = async (req, res) => {
 
     let startDate = new Date();
     let endDate = new Date();
-    endDate.setMonth(endDate.getMonth() + 3);
+    endDate.setMonth(endDate.getMonth() + duration);
+
     let subscriptionDuration = {
       startDate,
-      endDate,
-      duration: req.body.duration,
+      endDate: new Date(endDate),
+      duration: getDuration(),
     };
 
     const data = await User.findByIdAndUpdate(

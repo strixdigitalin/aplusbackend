@@ -6,7 +6,7 @@ const validator = require("../Middlewares/Validator");
 
 const getUser = async (req, res, next) => {
   try {
-    const user = await User.find(req.query);
+    const user = await User.find(req.query).populate("subscription");
     if (user.length == 0) {
       return res
         .status(400)
