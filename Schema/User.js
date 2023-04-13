@@ -34,6 +34,14 @@ const userdata = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "subscription",
     },
+    subscriptionDuration: {
+      startDate: Date,
+      duration: {
+        type: String,
+        enum: ["1month", "3month", "6month", "yearly"],
+      },
+      endDate: Date,
+    },
   },
   { timestamps: true }
 );

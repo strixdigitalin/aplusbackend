@@ -57,11 +57,51 @@ const updateSubsCription = async (req, res, next) => {
   }
 };
 
+const subscribe = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { duration, subscription } = req.body;
+    if (!id)
+      return res
+        .status(400)
+        .send({ success: false, message: " userid is required" });
+    if (!duration)
+      return res
+        .status(400)
+        .send({ success: false, message: " duration is required" });
+    if (!subscription)
+      return res
+        .status(400)
+        .send({ success: false, message: " subscription is required" });
+
+    let startDate = new Date();
+    let endDate = new Date();
+    endDate.setMonth(endDate.getMonth() + 3);
+    let subscriptionDuration = {
+      startDate,
+      endDate,
+      duration: req.body.duration,
+    };
+
+    const data = await User.findByIdAndUpdate(
+      req.params.id,
+      { subscriptionDuration, subscription },
+      {
+        new: true,
+      }
+    );
+
+    res.status(200).send({ success: true, message: "User updated", data });
+  } catch (error) {
+    res.status(400).send({ success: false, message: error.message });
+  }
+};
 module.exports = {
   getSubscription,
   createSubscription,
   updateSubsCription,
   deletePlan,
+  subscribe,
 };
 
 // module.exports = { createUser, userLogin, getUserDetails, updateUserDetails }

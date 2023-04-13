@@ -17,4 +17,15 @@ const uploadOnCloudinary = async (file) => {
     console.log(error.message);
   }
 };
+const uploadPdf = async (file) => {
+  try {
+    console.log("before clound", file);
+    const data = await cloudinary.uploader.upload(file.path);
+    console.log(data, "<<<thsis is data incloudinary");
+    return data.secure_url;
+  } catch (error) {
+    console.log(error.message);
+  }
+};
 module.exports = uploadOnCloudinary;
+module.exports = uploadPdf;

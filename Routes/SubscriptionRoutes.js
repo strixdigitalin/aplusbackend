@@ -8,6 +8,7 @@ const {
   getSubscription,
   updateSubsCription,
   deletePlan,
+  subscribe,
 } = require("../Controlers/SubscriptionControler");
 
 const router = express.Router();
@@ -15,6 +16,7 @@ const upload = require("../Middlewares/Multer");
 
 router.post("/create", createSubscription);
 router.get("/get", getSubscription);
+router.post("/subscribe/:id", subscribe);
 router.put(
   "/update/:id",
 

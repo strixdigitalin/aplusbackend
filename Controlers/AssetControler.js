@@ -1,5 +1,6 @@
 const SendError = require("../Middlewares/Response");
-
+const cloudinary = require("cloudinary").v2;
+const fs = require("fs");
 const Assets = require("../Schema/Assets");
 const GLOBAL = require("../GLOBAL_CONSTANTS");
 const ImageSchema = require("../Schema/ImageSchema");
@@ -79,6 +80,7 @@ const createLogo = async (req, res, next) => {
   }
 };
 const createPdf = async (req, res, next) => {
+  console.log(req.files.pdf);
   if (!req.files) {
     return res
       .status(400)
@@ -87,6 +89,60 @@ const createPdf = async (req, res, next) => {
   let tempData = req.files.pdf.map((item) => {
     return item.filename;
   });
+  const fileStream = req.files.pdf[0].path;
+  cloudinary.uploader.upload(fileStream, function (res, err) {
+    console.log(res, err);
+  });
+
+  return null;
+  const data = await PdfsSchema.create({
+    link: tempData[0],
+    // link: imageurl,
+    title: req.body?.title ? req.body.title : "",
+  });
+  res.status(200).send({
+    success: true,
+    data,
+  });
+  // const testData = req.body;
+  // if (!req.files) {
+  //   return res
+  //     .status(400)
+  //     .send({ success: false, message: "File is required" });
+  // }
+
+  // try {
+  //   console.log(req.files);
+  //   let tempData = req.files.pdf.map((item) => {
+  //     return item.filename;
+  //   });
+
+  //   const data = await Assets.findByIdAndUpdate(
+  //     req.query.assetId,
+  //     { pdf: tempData },
+  //     { new: true }
+  //   );
+  //   res.status(200).send({
+  //     success: true,
+  //     message: "Assets Created",
+  //     data,
+  //   });
+  // } catch (e) {
+  //   console.log(e);
+  //   SendError(res, e);
+  // }
+};
+const createPdf2 = async (req, res, next) => {
+  console.log(req.files.pdf);
+  if (!req.files) {
+    return res
+      .status(400)
+      .send({ success: false, message: "File is required" });
+  }
+  let tempData = req.files.pdf.map((item) => {
+    return item.filename;
+  });
+
   const imageurl = await uploadOnCloudinary(req.files.pdf[0]);
 
   const data = await PdfsSchema.create({
@@ -126,6 +182,7 @@ const createPdf = async (req, res, next) => {
   //   SendError(res, e);
   // }
 };
+
 const createBanner = async (req, res, next) => {
   if (!req.files) {
     return res
