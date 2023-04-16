@@ -10,21 +10,21 @@ const uploadOnCloudinary = require("../Middlewares/Cloudinary");
 
 const createSubCategory = async (req, res, next) => {
   const testData = req.body;
-  if (!req.files) {
-    return res
-      .status(400)
-      .send({ success: false, message: "image is required" });
-  }
-  const { image } = req.files;
-  console.log(image, "<<< this is image");
-  const uploadedFile = image[0];
-  if (!image) {
-    return res
-      .status(400)
-      .send({ success: false, message: "Image is required" });
-  }
+  // if (!req.files) {
+  //   return res
+  //     .status(400)
+  //     .send({ success: false, message: "image is required" });
+  // }
+  // const { image } = req.files;
+  // console.log(image, "<<< this is image");
+  // const uploadedFile = image[0];
+  // if (!image) {
+  //   return res
+  //     .status(400)
+  //     .send({ success: false, message: "Image is required" });
+  // }
   const { subCategoryName } = testData;
-  const url = await uploadOnCloudinary(req.files.image[0]);
+  // const url = await uploadOnCloudinary(req.files.image[0]);
   try {
     if (!validator.isValid(subCategoryName)) {
       return res
@@ -33,7 +33,7 @@ const createSubCategory = async (req, res, next) => {
     }
     const savedData = await SubCategoriesSchema.create({
       ...testData,
-      image: url,
+      // image: url,
     });
     res.status(200).send({
       success: true,
