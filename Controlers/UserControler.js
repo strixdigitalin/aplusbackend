@@ -6,7 +6,15 @@ const validator = require("../Middlewares/Validator");
 
 const getUser = async (req, res, next) => {
   try {
-    const user = await User.find(req.query).populate("subscription");
+    let page = 1;
+    let limit = 10;
+    if (req.query.limit) limit = req.query.limit;
+    if (req.query.page) page = req.query.page;
+
+    const user = await User.find(req.query)
+      .populate("subscription")
+      .skip((page - 1) * limit)
+      .limit(10);
     if (user.length == 0) {
       return res
         .status(400)

@@ -5,15 +5,6 @@ const MentorSchema = require("../Schema/MentorSchema");
 const createProgram = async (req, res, next) => {
   const testData = req.body;
   try {
-    // if (!req.files)
-    //   return res
-    //     .status(400)
-    //     .send({ success: false, message: "Image is rsequired" });
-    // if (!req.files.image.length)
-    //   return res
-    //     .status(400)
-    //     .send({ success: false, message: "Image is required" });
-    // const imageUrl = await uploadOnCloudinary(req.files.image[0]);
     const savedData = await MentorSchema.create({
       ...testData,
       // image: imageUrl,
