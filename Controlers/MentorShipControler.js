@@ -5,9 +5,11 @@ const MentorSchema = require("../Schema/MentorSchema");
 const createProgram = async (req, res, next) => {
   const testData = req.body;
   try {
+    console.log(req.files);
+    const imageUrl = req.files.image[0].filename;
     const savedData = await MentorSchema.create({
       ...testData,
-      // image: imageUrl,
+      image: imageUrl,
     });
     res
       .status(200)
