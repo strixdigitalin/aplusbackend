@@ -89,15 +89,15 @@ const createPdf = async (req, res, next) => {
   let tempData = req.files.pdf.map((item) => {
     return item.filename;
   });
-  const fileStream = req.files.pdf[0].path;
-  cloudinary.uploader.upload(fileStream, function (res, err) {
-    console.log(res, err);
-  });
+  const filename = req.files.pdf[0].filename;
+  // cloudinary.uploader.upload(fileStream, function (res, err) {
+  //   console.log(res, err);
+  // });
 
-  return null;
+  // return null;
   const data = await PdfsSchema.create({
     link: tempData[0],
-    // link: imageurl,
+    link: filename,
     title: req.body?.title ? req.body.title : "",
   });
   res.status(200).send({
